@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photon Executor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:        #111213;
+            --surface:   #181a1b;
+            --border:    #2a2c2e;
+            --accent:    #e8d87a;
+            --accent2:   #f5e98c;
+            --dim:       #7a7060;
+            --text:      #ddd9c8;
+            --glow:      rgba(232, 216, 122, 0.18);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(232,216,122,.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(232,216,122,.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        nav {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--accent);
+            letter-spacing: 0.1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-dot {
+            width: 8px; height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--accent); }
+            50%       { opacity: .5; box-shadow: 0 0 2px var(--accent); }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+        .nav-links a {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: .75rem;
+            color: var(--dim);
+            text-decoration: none;
+            letter-spacing: .12em;
+            transition: color .2s;
+        }
+        .nav-links a:hover { color: var(--accent); }
+
+        .hero {
+            position: relative;
+            z-index: 5;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 80px 24px 60px;
+            gap: 28px;
+        }
+
+        .badge {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: .7rem;
+            letter-spacing: .2em;
+            color: var(--accent);
+            background: rgba(232,216,122,.08);
+            border: 1px solid rgba(232,216,122,.25);
+            padding: 5px 14px;
+            border-radius: 2px;
+            animation: fadeDown .6s ease both;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 9vw, 6.5rem);
+            font-weight: 700;
+            letter-spacing: -.01em;
+            line-height: 1;
+            animation: fadeDown .7s .1s ease both;
+        }
+
+        .hero-title span {
+            color: var(--accent);
+            text-shadow: 0 0 40px var(--glow);
+        }
+
+        .hero-sub {
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: var(--dim);
+            letter-spacing: .08em;
+            max-width: 440px;
+            line-height: 1.6;
+            animation: fadeDown .8s .2s ease both;
+        }
+
+        .cta-row {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeDown .9s .3s ease both;
+        }
+
+        .btn {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: .8rem;
+            letter-spacing: .14em;
+            padding: 14px 32px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all .2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #111;
+        }
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: white;
+            opacity: 0;
+            transition: opacity .2s;
+        }
+        .btn-primary:hover::after { opacity: .12; }
+        .btn-primary:hover { box-shadow: 0 0 30px var(--glow); transform: translateY(-2px); }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid rgba(232,216,122,.35);
+        }
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            background: rgba(232,216,122,.06);
+            transform: translateY(-2px);
+        }
+
+        .stats {
+            position: relative; z-index: 5;
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            animation: fadeUp .9s .4s ease both;
+        }
+
+        .stat {
+            flex: 1;
+            max-width: 200px;
+            padding: 28px 32px;
+            text-align: center;
+            border-right: 1px solid var(--border);
+        }
+        .stat:last-child { border-right: none; }
+
+        .stat-val {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .stat-label {
+            font-size: .7rem;
+            letter-spacing: .18em;
+            color: var(--dim);
+            margin-top: 4px;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .features {
+            position: relative; z-index: 5;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1px;
+            background: var(--border);
+            margin: 60px 40px;
+            border: 1px solid var(--border);
+            animation: fadeUp 1s .5s ease both;
+        }
+
+        .feat {
+            background: var(--surface);
+            padding: 32px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: background .2s;
+        }
+        .feat:hover { background: #1e2022; }
+
+        .feat-icon {
+            font-size: 1.3rem;
+            color: var(--accent);
+        }
+
+        .feat-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: .06em;
+            color: var(--text);
+        }
+
+        .feat-desc {
+            font-size: .85rem;
+            color: var(--dim);
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        footer {
+            position: relative; z-index: 5;
+            border-top: 1px solid var(--border);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        footer span {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: .7rem;
+            color: var(--dim);
+            letter-spacing: .1em;
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <div class="logo-dot"></div>
+            PHOTON
+        </div>
+        <ul class="nav-links">
+            <li><a href="https://0x0FD.github.io/photon/index.html"  class="active">HOME</a></li>
+            <li><a href="https://0x0FD.github.io/photon/changelog.html">CHANGELOG</a></li>
+            <!-- <li><a href="#">DISCORD</a></li> -->
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <div class="badge">⚡ v0.6 — NOW AVAILABLE</div>
+
+        <h1 class="hero-title">
+            PHOTON<br><span>EXECUTOR</span>
+        </h1>
+
+        <p class="hero-sub">
+            Fast attach. Clean GUI.<br>
+            Built for speed, designed for control.
+        </p>
+
+        <div class="cta-row">
+            <a href="https://github.com/0x0FD/PhotonExecutor/releases/download/Bootstrapper/Photon-Bootstrapperx64.exe" class="btn btn-primary">
+                ↓ DOWNLOAD NOW
+            </a>
+            <a href="#" class="btn btn-secondary">
+                VIEW CHANGELOG
+            </a>
+        </div>
+    </section>
+
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-val">&lt;0.3s</div>
+            <div class="stat-label">ATTACH TIME</div>
+        </div>
+        <div class="stat">
+            <div class="stat-val">99.9%</div>
+            <div class="stat-label">UPTIME</div>
+        </div>
+        <div class="stat">
+            <div class="stat-val">UNC</div>
+            <div class="stat-label">API SUPPORT</div>
+        </div>
+        <div class="stat">
+            <div class="stat-val">FREE</div>
+            <div class="stat-label">ALWAYS</div>
+        </div>
+    </div>
+
+    <div class="features">
+        <div class="feat">
+            <div class="feat-icon">⚡</div>
+            <div class="feat-title">Instant Attach</div>
+            <div class="feat-desc">Sub-300ms inject times with zero lag on startup.</div>
+        </div>
+        <div class="feat">
+            <div class="feat-icon">🖥</div>
+            <div class="feat-title">Clean GUI</div>
+            <div class="feat-desc">Minimal, distraction-free interface. No bloat.</div>
+        </div>
+        <div class="feat">
+            <div class="feat-icon">🔒</div>
+            <div class="feat-title">Undetected</div>
+            <div class="feat-desc">Regularly updated to stay ahead of detections.</div>
+        </div>
+        <div class="feat">
+            <div class="feat-icon">📜</div>
+            <div class="feat-title">Script Hub</div>
+            <div class="feat-desc">Built-in hub with curated, working scripts.</div>
+        </div>
+    </div>
+
+    <footer>
+        <span>PHOTON EXECUTOR © 2026</span>
+        <span>BUILT FOR SPEED</span>
+    </footer>
+
+</body>
+</html>

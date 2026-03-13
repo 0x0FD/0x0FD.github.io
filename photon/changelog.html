@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photon — Changelog</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:      #111213;
+            --surface: #181a1b;
+            --border:  #2a2c2e;
+            --accent:  #e8d87a;
+            --glow:    rgba(232, 216, 122, 0.18);
+            --dim:     #7a7060;
+            --text:    #ddd9c8;
+            --add:     #7ecf8e;
+            --fix:     #e8a87a;
+            --imp:     #7ab8e8;
+            --rem:     #e87a7a;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(232,216,122,.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(232,216,122,.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        nav {
+            position: relative; z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--accent);
+            letter-spacing: .1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-dot {
+            width: 8px; height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--accent); }
+            50%       { opacity: .5; box-shadow: 0 0 2px var(--accent); }
+        }
+
+        .nav-links { display: flex; gap: 32px; list-style: none; }
+        .nav-links a {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: .75rem;
+            color: var(--dim);
+            text-decoration: none;
+            letter-spacing: .12em;
+            transition: color .2s;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+        .page-header {
+            position: relative; z-index: 5;
+            padding: 60px 40px 40px;
+            border-bottom: 1px solid var(--border);
+            animation: fadeDown .6s ease both;
+        }
+
+        .page-header-inner {
+            max-width: 860px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .page-label {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: .7rem;
+            letter-spacing: .2em;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+
+        .page-title {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 700;
+            letter-spacing: -.01em;
+            line-height: 1;
+        }
+
+        .page-title span { color: var(--accent); }
+
+        .page-desc {
+            font-size: .9rem;
+            color: var(--dim);
+            letter-spacing: .06em;
+            margin-top: 10px;
+            font-weight: 300;
+        }
+
+        .legend { display: flex; gap: 14px; flex-wrap: wrap; }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: .65rem;
+            letter-spacing: .1em;
+            color: var(--dim);
+        }
+
+        .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+        .timeline-wrap {
+            position: relative; z-index: 5;
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 50px 40px 80px;
+            width: 100%;
+        }
+
+        .release {
+            position: relative;
+            padding-left: 28px;
+            border-left: 1px solid var(--border);
+            padding-bottom: 50px;
+            animation: fadeUp .7s ease both;
+        }
+
+        .release:last-child { padding-bottom: 0; border-left: 1px solid transparent; }
+
+        .release::before {
+            content: '';
+            position: absolute;
+            left: -5px; top: 6px;
+            width: 9px; height: 9px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--glow);
+        }
+
+        .release.old::before { background: var(--dim); box-shadow: none; }
+        .release.old { border-left-color: #222426; }
+
+        .release-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .version-tag {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1rem;
+            color: var(--accent);
+            letter-spacing: .1em;
+        }
+
+        .release.old .version-tag { color: var(--dim); }
+
+        .latest-badge {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: .6rem;
+            letter-spacing: .18em;
+            color: #111;
+            background: var(--accent);
+            padding: 3px 9px;
+            border-radius: 2px;
+        }
+
+        .release-date {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: .7rem;
+            letter-spacing: .1em;
+            color: var(--dim);
+            margin-left: auto;
+        }
+
+        .entries { display: flex; flex-direction: column; gap: 8px; }
+
+        .entry {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 12px 16px;
+            transition: border-color .2s, background .2s;
+        }
+
+        .entry:hover {
+            background: #1e2022;
+            border-color: rgba(232,216,122,.2);
+        }
+
+        .tag {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: .6rem;
+            letter-spacing: .12em;
+            padding: 3px 8px;
+            border-radius: 2px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .tag-add { color: var(--add); background: rgba(126,207,142,.1); }
+        .tag-fix { color: var(--fix); background: rgba(232,168,122,.1); }
+        .tag-imp { color: var(--imp); background: rgba(122,184,232,.1); }
+        .tag-rem { color: var(--rem); background: rgba(232,122,122,.1); }
+
+        .entry-text {
+            font-size: .95rem;
+            font-weight: 400;
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        .entry-text small {
+            display: block;
+            font-size: .78rem;
+            color: var(--dim);
+            font-weight: 300;
+            margin-top: 2px;
+        }
+
+        footer {
+            position: relative; z-index: 5;
+            border-top: 1px solid var(--border);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        footer span {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: .7rem;
+            color: var(--dim);
+            letter-spacing: .1em;
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .release:nth-child(2) { animation-delay: .1s; }
+        .release:nth-child(3) { animation-delay: .2s; }
+        .release:nth-child(4) { animation-delay: .3s; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">
+            <div class="logo-dot"></div>
+            PHOTON
+        </a>
+        <ul class="nav-links">
+            <li><a href="https://0x0FD.github.io/photon/index.html">HOME</a></li>
+            <li><a href="https://0x0FD.github.io/photon/changelog.html" class="active">CHANGELOG</a></li>
+        </ul>
+    </nav>
+
+    <div class="page-header">
+        <div class="page-header-inner">
+            <div>
+                <p class="page-label">// RELEASE HISTORY</p>
+                <h1 class="page-title">CHANGE<span>LOG</span></h1>
+                <p class="page-desc">Every update, fix, and improvement — documented.</p>
+            </div>
+            <div class="legend">
+                <div class="legend-item"><div class="legend-dot" style="background:var(--add)"></div>ADDED</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--fix)"></div>FIXED</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--imp)"></div>IMPROVED</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--rem)"></div>REMOVED</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="timeline-wrap">
+
+        <!-- v0.6 -->
+        <div class="release">
+            <div class="release-header">
+                <span class="version-tag">v0.6</span>
+                <span class="latest-badge">LATEST</span>
+                <span class="release-date">13 MAR 2026</span>
+            </div>
+            <div class="entries">
+                <div class="entry">
+                    <span class="tag tag-imp">IMP</span>
+                    <div class="entry-text">
+                        Redesigned GUI with a cleaner, more modern layout
+                        <small>Rebuilt on a new forms framework — navigation is snappier and the interface feels significantly lighter.</small>
+                    </div>
+                </div>
+                <div class="entry">
+                    <span class="tag tag-fix">FIX</span>
+                    <div class="entry-text">
+                        Updated Xeno API to match the latest Roblox client
+                        <small>Resolves script execution failures introduced by the most recent Roblox update.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- v0.5 -->
+        <div class="release">
+            <div class="release-header">
+                <span class="version-tag">v0.5</span>
+                <span class="release-date">23 FEB 2026</span>
+            </div>
+            <div class="entries">
+                <div class="entry">
+                    <span class="tag tag-fix">FIX</span>
+                    <div class="entry-text">
+                        Fixed a critical issue where Photon would fail to attach entirely
+                        <small>Root cause was a breaking change in the Roblox launcher. Injection now works reliably across all tested configurations.</small>
+                    </div>
+                </div>
+                <div class="entry">
+                    <span class="tag tag-fix">FIX</span>
+                    <div class="entry-text">
+                        Synced Xeno API with the latest upstream changes
+                        <small>Restores full script compatibility following the Feb 20 Roblox patch rollout.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- v0.4 -->
+        <div class="release old">
+            <div class="release-header">
+                <span class="version-tag">v0.4</span>
+                <span class="release-date">14 FEB 2026</span>
+            </div>
+            <div class="entries">
+                <div class="entry">
+                    <span class="tag tag-imp">IMP</span>
+                    <div class="entry-text">
+                        Significantly reduced attach time
+                        <small>Reworked the injection pipeline for a noticeably faster and more consistent attach on all supported systems.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- v0.1 -->
+        <div class="release old">
+            <div class="release-header">
+                <span class="version-tag">v0.1</span>
+                <span class="release-date">28 JAN 2026</span>
+            </div>
+            <div class="entries">
+                <div class="entry">
+                    <span class="tag tag-add">ADD</span>
+                    <div class="entry-text">
+                        Initial public release of Photon Executor
+                        <small>Core injection engine, basic GUI, and script execution support. The beginning of something fast.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <span>PHOTON EXECUTOR © 2026</span>
+        <span>BUILT FOR SPEED</span>
+    </footer>
+
+</body>
+</html>
