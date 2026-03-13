@@ -7,16 +7,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg:        #111213;
             --surface:   #181a1b;
-            --border:    #2a2c2e;
             --accent:    #e8d87a;
             --accent2:   #f5e98c;
-            --dim:       #7a7060;
-            --text:      #ddd9c8;
             --glow:      rgba(232, 216, 122, 0.18);
+            --bg:        #080808;
+            --bg1:       #0f0f0f;
+            --bg2:       #161616;
+            --border:    #1f1f1f;
+            --yellow:    #ffff8d;
+            --yellow2:   #ffe566;
+            --dim:       #4a4a32;
+            --text:      #e8e8e8;
+            --muted:     #555;
         }
-
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
@@ -79,17 +83,17 @@
             gap: 32px;
             list-style: none;
         }
-        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
 
         .nav-links a {
             font-family: 'Share Tech Mono', monospace;
             font-size: .75rem;
-            color: var(--dim);
+            color: var(--muted);
             text-decoration: none;
             letter-spacing: .12em;
             transition: color .2s;
         }
-        .nav-links a:hover { color: var(--accent); }
+        .nav-links a:hover,
+        .nav-links a.active { color: var(--accent); }
 
         .hero {
             position: relative;
@@ -132,7 +136,7 @@
         .hero-sub {
             font-size: 1.1rem;
             font-weight: 300;
-            color: var(--dim);
+            color: var(--muted);
             letter-spacing: .08em;
             max-width: 440px;
             line-height: 1.6;
@@ -176,7 +180,10 @@
             transition: opacity .2s;
         }
         .btn-primary:hover::after { opacity: .12; }
-        .btn-primary:hover { box-shadow: 0 0 30px var(--glow); transform: translateY(-2px); }
+        .btn-primary:hover {
+            box-shadow: 0 0 30px var(--glow);
+            transform: translateY(-2px);
+        }
 
         .btn-secondary {
             background: transparent;
@@ -189,11 +196,11 @@
             transform: translateY(-2px);
         }
 
+        /* ── stats ── */
         .stats {
             position: relative; z-index: 5;
             display: flex;
             justify-content: center;
-            gap: 0;
             border-top: 1px solid var(--border);
             border-bottom: 1px solid var(--border);
             animation: fadeUp .9s .4s ease both;
@@ -218,51 +225,97 @@
         .stat-label {
             font-size: .7rem;
             letter-spacing: .18em;
-            color: var(--dim);
+            color: var(--muted);
             margin-top: 4px;
             font-family: 'Share Tech Mono', monospace;
         }
 
-        .features {
+        /* ── features ── */
+        .features-wrap {
             position: relative; z-index: 5;
+            margin: 60px 40px;
+            animation: fadeUp 1s .5s ease both;
+        }
+
+        .features-heading {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: .7rem;
+            letter-spacing: .22em;
+            color: var(--accent);
+            opacity: .55;
+            margin-bottom: 20px;
+        }
+
+        .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 1px;
             background: var(--border);
-            margin: 60px 40px;
             border: 1px solid var(--border);
-            animation: fadeUp 1s .5s ease both;
         }
 
         .feat {
-            background: var(--surface);
+            background: var(--bg1);          /* #0f0f0f — clearly off-bg */
             padding: 32px 28px;
             display: flex;
             flex-direction: column;
             gap: 12px;
+            position: relative;
+            overflow: hidden;
             transition: background .2s;
         }
-        .feat:hover { background: #1e2022; }
+
+        /* yellow left-bar reveal on hover */
+        .feat::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 2px; height: 0;
+            background: var(--accent);
+            transition: height .3s ease;
+        }
+        .feat:hover { background: var(--bg2); }   /* #161616 */
+        .feat:hover::before { height: 100%; }
+
+        /* subtle top accent strip */
+        .feat::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, var(--accent) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity .3s;
+        }
+        .feat:hover::after { opacity: .35; }
 
         .feat-icon {
             font-size: 1.3rem;
-            color: var(--accent);
+            width: 36px; height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(232,216,122,.07);
+            border: 1px solid rgba(232,216,122,.15);
+            border-radius: 2px;
+            flex-shrink: 0;
         }
 
         .feat-title {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 600;
             letter-spacing: .06em;
             color: var(--text);
         }
 
         .feat-desc {
-            font-size: .85rem;
-            color: var(--dim);
-            line-height: 1.6;
+            font-size: .88rem;
+            color: var(--muted);
+            line-height: 1.65;
             font-weight: 300;
         }
 
+        /* ── footer ── */
         footer {
             position: relative; z-index: 5;
             border-top: 1px solid var(--border);
@@ -275,7 +328,7 @@
         footer span {
             font-family: 'Share Tech Mono', monospace;
             font-size: .7rem;
-            color: var(--dim);
+            color: var(--muted);
             letter-spacing: .1em;
         }
 
@@ -297,9 +350,8 @@
             PHOTON
         </div>
         <ul class="nav-links">
-            <li><a href="https://0x0FD.github.io/photon/index.html"  class="active">HOME</a></li>
+            <li><a href="https://0x0FD.github.io/photon/index.html" class="active">HOME</a></li>
             <li><a href="https://0x0FD.github.io/photon/changelog.html">CHANGELOG</a></li>
-            <!-- <li><a href="#">DISCORD</a></li> -->
         </ul>
     </nav>
 
@@ -319,7 +371,7 @@
             <a href="https://github.com/0x0FD/PhotonExecutor/releases/download/Bootstrapper/Photon-Bootstrapperx64.exe" class="btn btn-primary">
                 ↓ DOWNLOAD NOW
             </a>
-            <a href="#" class="btn btn-secondary">
+            <a href="https://0x0FD.github.io/photon/changelog.html" class="btn btn-secondary">
                 VIEW CHANGELOG
             </a>
         </div>
@@ -327,11 +379,11 @@
 
     <div class="stats">
         <div class="stat">
-            <div class="stat-val">&lt;0.3s</div>
+            <div class="stat-val">&lt;0.2s</div>
             <div class="stat-label">ATTACH TIME</div>
         </div>
         <div class="stat">
-            <div class="stat-val">99.9%</div>
+            <div class="stat-val">98.2%</div>
             <div class="stat-label">UPTIME</div>
         </div>
         <div class="stat">
@@ -344,26 +396,39 @@
         </div>
     </div>
 
-    <div class="features">
-        <div class="feat">
-            <div class="feat-icon">⚡</div>
-            <div class="feat-title">Instant Attach</div>
-            <div class="feat-desc">Sub-300ms inject times with zero lag on startup.</div>
-        </div>
-        <div class="feat">
-            <div class="feat-icon">🖥</div>
-            <div class="feat-title">Clean GUI</div>
-            <div class="feat-desc">Minimal, distraction-free interface. No bloat.</div>
-        </div>
-        <div class="feat">
-            <div class="feat-icon">🔒</div>
-            <div class="feat-title">Undetected</div>
-            <div class="feat-desc">Regularly updated to stay ahead of detections.</div>
-        </div>
-        <div class="feat">
-            <div class="feat-icon">📜</div>
-            <div class="feat-title">Script Hub</div>
-            <div class="feat-desc">Built-in hub with curated, working scripts.</div>
+    <div class="features-wrap">
+        <p class="features-heading">// FEATURES</p>
+        <div class="features">
+            <div class="feat">
+                <div class="feat-icon">⚡</div>
+                <div class="feat-title">Instant Attach</div>
+                <div class="feat-desc">Sub-200ms inject times with zero lag on startup.</div>
+            </div>
+            <div class="feat">
+                <div class="feat-icon">🖥</div>
+                <div class="feat-title">Monaco Editor</div>
+                <div class="feat-desc">VS Code-grade editor with syntax highlighting and multi-tab support.</div>
+            </div>
+            <div class="feat">
+                <div class="feat-icon">🔒</div>
+                <div class="feat-title">Undetected</div>
+                <div class="feat-desc">Regularly updated to stay ahead of detections.</div>
+            </div>
+            <div class="feat">
+                <div class="feat-icon">🌐</div>
+                <div class="feat-title">Script Hub</div>
+                <div class="feat-desc">Live ScriptBlox integration — search and execute 60k+ scripts instantly.</div>
+            </div>
+            <div class="feat">
+                <div class="feat-icon">🔄</div>
+                <div class="feat-title">Auto-Attach</div>
+                <div class="feat-desc">Automatically re-attaches when Roblox opens. Configurable interval.</div>
+            </div>
+            <div class="feat">
+                <div class="feat-icon">💾</div>
+                <div class="feat-title">Script Tabs</div>
+                <div class="feat-desc">Multiple tabs, save and open .lua files directly from the toolbar.</div>
+            </div>
         </div>
     </div>
 
