@@ -110,7 +110,7 @@
     .release::before{content:'';position:absolute;left:-5px;top:7px;width:9px;height:9px;border-radius:50%;background:var(--y);box-shadow:0 0 10px rgba(255,255,141,.35);}
     .release.old::before{background:var(--muted);box-shadow:none;}
     .release.old{border-left-color:#1e1e1a;}
-    .r1{animation-delay:.3s;} .r2{animation-delay:.45s;} .r3{animation-delay:.6s;} .r4{animation-delay:.75s;}
+    .r1{animation-delay:.3s;} .r2{animation-delay:.45s;} .r3{animation-delay:.6s;} .r4{animation-delay:.75s;} .r4{animation-delay:1s;}
 
     .rel-head{display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap;}
     .ver{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;letter-spacing:-.01em;color:var(--y);}
@@ -199,11 +199,65 @@
 
   <div class="timeline">
 
-    <!-- v0.6 -->
-    <div class="release r1">
+    <!-- v1.1 -->
+    <div class="release r2">
+      <div class="rel-head">
+        <span class="ver">v1.1</span>
+        <span class="latest">latest</span>
+        <span class="rel-date">14 mar 2026</span>
+      </div>
+      <div class="entries">
+        <div class="entry">
+          <span class="etag t-fix">FIX</span>
+          <div class="entry-body">
+            <div class="entry-title">Fix Settings Tab</div>
+          </div>
+        </div>
+        <div class="entry">
+          <span class="etag t-fix">FIX</span>
+          <div class="entry-body">
+            <div class="entry-title">Fix Rename Tab</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+        <!-- v1.0 -->
+    <div class="release r2">
+      <div class="rel-head">
+        <span class="ver">v1.0</span>
+        <span class="rel-date">14 mar 2026</span>
+      </div>
+      <div class="entries">
+        <div class="entry">
+          <span class="etag t-imp">IMP</span>
+          <div class="entry-body">
+            <div class="entry-title">Improve UI by switching from Forms to .NET WPF</div>
+            <div class="entry-desc">Rebuilt GUI by adding switching old framework (Forms) to new one (.NET WPf) </div>
+          </div>
+        </div>
+        <div class="entry">
+          <span class="etag t-add">ADD</span>
+          <div class="entry-body">
+            <div class="entry-title">Added new Script searching</div>
+            <div class="entry-desc">You can search for scripts by using scriptblox API now.</div>
+          </div>
+        </div>
+        <div class="entry">
+          <span class="etag t-add">ADD</span>
+          <div class="entry-body">
+            <div class="entry-title">Added new Tabs</div>
+            <div class="entry-desc">Added tabs. you can create multiple tabs to store multiple scripts. however they dont save for now sorry :/ </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    
+    <!-- v.06 -->
+    <div class="release r2">
       <div class="rel-head">
         <span class="ver">v0.6</span>
-        <span class="latest">latest</span>
         <span class="rel-date">13 mar 2026</span>
       </div>
       <div class="entries">
@@ -225,7 +279,7 @@
     </div>
 
     <!-- v0.5 -->
-    <div class="release r2">
+    <div class="release old r3">
       <div class="rel-head">
         <span class="ver">v0.5</span>
         <span class="rel-date">23 feb 2026</span>
@@ -249,7 +303,7 @@
     </div>
 
     <!-- v0.4 -->
-    <div class="release old r3">
+    <div class="release old r4">
       <div class="rel-head">
         <span class="ver">v0.4</span>
         <span class="rel-date">14 feb 2026</span>
@@ -266,7 +320,7 @@
     </div>
 
     <!-- v0.1 -->
-    <div class="release old r4">
+    <div class="release old r5">
       <div class="rel-head">
         <span class="ver">v0.1</span>
         <span class="rel-date">28 jan 2026</span>
