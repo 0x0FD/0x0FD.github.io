@@ -1,254 +1,247 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>0x0FD — Developer</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --y: #ffff8d;
-      --y2: rgba(255,255,141,0.08);
-      --bg: #060606;
-      --grid: #161613;
-      --muted: #333330;
-      --dim: #4a4a45;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cat Library</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, Arial, sans-serif;
+        background: radial-gradient(circle at top, #1b1b1b, #0d0d0d);
+        color: white;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 18px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: rgba(20, 20, 20, 0.6);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      header h3 {
+        margin: 0;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+      span {
+        margin: 0;
+        font-weight: 300;
+        font-size: 10px;
+        letter-spacing: 0.1px;
+      }
+      button {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      button:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-1px);
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 14px;
+        padding: 14px;
+      }
+      .card {
+        position: relative;
+        border-radius: 16px;
+        overflow: hidden;
+        background: #151515;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+      .card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+      }
+      .cat {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.3s ease;
+      }
+      .card:hover .cat {
+        transform: scale(1.05);
+      }
+      .actions {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        display: flex;
+        gap: 6px;
+      }
+      .icon-btn {
+        background: rgba(0, 0, 0, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: white;
+        padding: 6px 8px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 12px;
+        backdrop-filter: blur(6px);
+        transition: 0.2s;
+      }
+      .icon-btn:hover {
+        transform: scale(1.1);
+        background: rgba(0, 0, 0, 0.75);
+      }
+      #favoritesPanel {
+        position: fixed;
+        right: 10px;
+        top: 70px;
+        width: 320px;
+        height: calc(100% - 80px);
+        background: rgba(25, 25, 25, 0.7);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        overflow-y: auto;
+        padding: 12px;
+        display: none;
+      }
+      #favoritesPanel img {
+        width: 100%;
+        border-radius: 12px;
+        margin-bottom: 10px;
+      }
+      #favoritesPanel button {
+        width: 100%;
+        margin-bottom: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h3>Cat Library <span class="smaller">by 0x0FD</span></h3>
+      <div>
+        <button onclick="toggleFavorites()">Favorites</button>
+        <button onclick="clearFavorites()">Clear</button>
+      </div>
+    </header>
+    <div class="grid" id="grid"></div>
+    <div id="favoritesPanel"></div>
+    <script>
+      const grid = document.getElementById("grid");
+      const favPanel = document.getElementById("favoritesPanel");
+      let buffer = [];
+      const BUFFER_SIZE = 150;
+      let favorites = JSON.parse(localStorage.getItem("cats_fav") || "[]");
+      function saveFavs() {
+        localStorage.setItem("cats_fav", JSON.stringify(favorites));
+      }
+      function isFav(url) {
+        return favorites.includes(url);
+      }
+      function renderFavorites() {
+        favPanel.innerHTML = "";
+        favorites.forEach((url) => {
+          const wrapper = document.createElement("div");
+          const img = document.createElement("img");
+          img.src = url;
+          const removeBtn = document.createElement("button");
+          removeBtn.innerText = "Remove";
+          removeBtn.onclick = () => {
+            favorites = favorites.filter((c) => c !== url);
+            saveFavs();
+            renderFavorites();
+          };
+          wrapper.appendChild(img);
+          wrapper.appendChild(removeBtn);
+          favPanel.appendChild(wrapper);
+        });
+      }
+      function createCat() {
+        const url = `https://cataas.com/cat?${Date.now()}-${Math.random()}`;
+        const card = document.createElement("div");
+        card.className = "card";
+        const img = document.createElement("img");
+        img.src = url;
+        img.className = "cat";
+        const actions = document.createElement("div");
+        actions.className = "actions";
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; }
-
-    body {
-      opacity: 0;
-      cursor: none;
-      background: var(--bg);
-      font-family: 'Space Mono', monospace;
-      animation: fadeIn 0.3s 0.05s ease forwards;
-      overflow: hidden;
-      height: 100vh;
-      user-select: none;
-    }
-
-    /* CURSOR */
-    #cur  { position:fixed;width:10px;height:10px;background:var(--y);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference; }
-    #cring{ position:fixed;width:36px;height:36px;border:1px solid rgba(255,255,141,.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .12s,height .12s,border-color .12s; }
-    #cglow{ position:fixed;width:340px;height:340px;border-radius:50%;pointer-events:none;z-index:0;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(255,255,141,.05) 0%,transparent 70%); }
-
-    /* BG */
-    .gbg {
-      position:fixed;inset:0;z-index:0;
-      background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
-      background-size:44px 44px;
-    }
-    .vig { position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.75) 100%); }
-    .scan{
-      position:fixed;inset:0;z-index:200;pointer-events:none;
-      background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.10) 2px,rgba(0,0,0,.10) 4px);
-    }
-
-    /* NAV */
-    nav {
-      position:fixed;top:0;left:0;right:0;z-index:100;
-      display:flex;align-items:center;justify-content:space-between;
-      padding:0 26px;height:50px;
-      background:rgba(6,6,6,.88);border-bottom:1px solid var(--grid);
-      backdrop-filter:blur(16px);
-      opacity:0;animation:fadeIn .4s 1.6s forwards;
-    }
-    .nav-left { display:flex;align-items:center;gap:10px; }
-    .nav-logo  { font-size:12px;color:var(--y);letter-spacing:.1em; }
-    .nav-logo::after { content:"_";animation:blink 1.1s step-end infinite; }
-    .nav-sep   { font-size:10px;color:var(--muted); }
-    .nav-tag   { font-size:10px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase; }
-    .nav-links { display:flex;gap:20px;list-style:none; }
-    .nav-links a { font-size:10px;color:var(--dim);text-decoration:none;letter-spacing:.12em;text-transform:uppercase;transition:color 100ms;cursor:none; }
-    .nav-links a:hover { color:var(--y); }
-
-    /* CORNERS */
-    .corner { position:fixed;width:38px;height:38px;pointer-events:none;z-index:50;opacity:0;animation:fadeIn .5s 2.1s forwards; }
-    .c-tl{top:58px;left:14px;border-top:1px solid #222;border-left:1px solid #222;}
-    .c-tr{top:58px;right:14px;border-top:1px solid #222;border-right:1px solid #222;}
-    .c-bl{bottom:42px;left:14px;border-bottom:1px solid #222;border-left:1px solid #222;}
-    .c-br{bottom:42px;right:14px;border-bottom:1px solid #222;border-right:1px solid #222;}
-
-    /* SIDE */
-    .side { position:fixed;top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;align-items:center;gap:6px;opacity:0;animation:fadeIn .5s 2s forwards; }
-    .side-l { left:16px; }
-    .side-r { right:16px; }
-    .side-txt { font-size:9px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;writing-mode:vertical-rl; }
-    .side-line { width:1px;height:56px;background:linear-gradient(to bottom,transparent,var(--muted),transparent);margin:2px auto; }
-
-    /* MAIN */
-    main {
-      position:relative;z-index:10;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
-      height:100vh;text-align:center;padding:50px 24px 36px;
-    }
-
-    .boot-line { font-size:10px;color:var(--muted);letter-spacing:.16em;text-transform:uppercase;margin-bottom:36px;opacity:0;animation:fadeIn .4s .15s forwards; }
-    .boot-line .ok { color:#4ade80; }
-
-    .status { display:inline-flex;align-items:center;gap:8px;font-size:10px;color:var(--dim);border:1px solid #1e1e1a;border-radius:100px;padding:5px 14px;margin-bottom:30px;opacity:0;animation:fadeIn .4s .45s forwards;letter-spacing:.1em;text-transform:uppercase; }
-    .sdot { width:5px;height:5px;border-radius:50%;background:#4ade80;animation:pulse 2s ease-in-out infinite; }
-
-    .eyebrow { font-size:11px;color:var(--dim);letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px;opacity:0;animation:slideUp .5s .7s ease forwards; }
-    .eyebrow .acc { color:var(--y);opacity:.85; }
-
-    h1 {
-      font-family:'Syne',sans-serif;font-weight:800;
-      font-size:clamp(66px,10.5vw,134px);line-height:.88;letter-spacing:-.04em;
-      color:#fff;opacity:0;animation:slideUp .6s .85s ease forwards;
-    }
-
-    /* GLITCH */
-    .glitch { position:relative;color:var(--y);display:inline-block;animation:gShift 5.5s infinite; }
-    .glitch::before,.glitch::after { content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%; }
-    .glitch::before { color:#ff4d6d;animation:g1 5.5s infinite;clip-path:polygon(0 0,100% 0,100% 38%,0 38%); }
-    .glitch::after  { color:#4dffee;animation:g2 5.5s infinite;clip-path:polygon(0 62%,100% 62%,100% 100%,0 100%); }
-    .uline { position:absolute;bottom:4px;left:0;width:0;height:3px;background:var(--y);animation:lineGrow .7s 1.5s ease forwards; }
-
-    .sub { font-size:12px;color:var(--muted);margin-top:26px;margin-bottom:40px;opacity:0;animation:slideUp .5s 1.1s ease forwards;letter-spacing:.04em; }
-
-    /* BUTTONS */
-    .cta { display:flex;gap:10px;flex-wrap:wrap;justify-content:center;opacity:0;animation:slideUp .5s 1.25s ease forwards; }
-    .btn {
-      font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.08em;
-      text-decoration:none;padding:11px 22px;border-radius:3px;border:1px solid;
-      transition:all 100ms ease;cursor:none;position:relative;overflow:hidden;
-    }
-    .btn::before { content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,141,.1),transparent);transition:left .3s ease; }
-    .btn:hover::before { left:100%; }
-    .btn-p { background:var(--y);color:#070700;border-color:var(--y);font-weight:700; }
-    .btn-p:hover { background:rgba(255,255,141,.88);box-shadow:0 0 28px rgba(255,255,141,.28),0 0 60px rgba(255,255,141,.08); }
-    .btn-g { background:transparent;color:var(--dim);border-color:#222; }
-    .btn-g:hover { color:var(--y);border-color:var(--y);background:var(--y2);box-shadow:0 0 16px rgba(255,255,141,.07); }
-
-    /* FOOTER */
-    .footer { position:fixed;bottom:0;left:0;right:0;height:34px;display:flex;align-items:center;padding:0 18px;border-top:1px solid var(--grid);background:rgba(6,6,6,.78);backdrop-filter:blur(10px);z-index:100;gap:14px;opacity:0;animation:fadeIn .5s 2s forwards; }
-    .fb { font-size:9px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap; }
-    .fsep { font-size:9px;color:#1c1c18; }
-    .tw { flex:1;overflow:hidden;white-space:nowrap; }
-    .ti { display:inline-block;animation:scrollT 22s linear infinite;white-space:nowrap; }
-    .ti span { font-size:9px;color:var(--muted);letter-spacing:.18em;margin-right:48px;text-transform:uppercase; }
-    .ti .d { color:var(--y);opacity:.45;margin-right:48px; }
-
-    /* KEYFRAMES */
-    @keyframes fadeIn { to{opacity:1;} }
-    @keyframes slideUp { from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);} }
-    @keyframes lineGrow { to{width:100%;} }
-    @keyframes blink { 0%,100%{opacity:1}50%{opacity:0} }
-    @keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 6px #4ade8099;}50%{opacity:.5;box-shadow:0 0 2px #4ade8033;} }
-    @keyframes scrollT { from{transform:translateX(0);}to{transform:translateX(-50%);} }
-    @keyframes gShift { 0%,88%,100%{transform:none;}89%{transform:skewX(-1.2deg);}90%{transform:none;}93%{transform:skewX(.6deg);}94%{transform:none;} }
-    @keyframes g1 { 0%,88%,100%{transform:none;opacity:0;}89%{transform:translate(-3px,1px);opacity:.75;}90%{transform:translate(3px,-1px);opacity:.5;}91%{transform:none;opacity:0;} }
-    @keyframes g2 { 0%,89%,100%{transform:none;opacity:0;}90%{transform:translate(3px,2px);opacity:.65;}91%{transform:translate(-2px,-1px);opacity:.4;}92%{transform:none;opacity:0;} }
-
-    @media(max-width:500px){.nav-links,.side{display:none;}h1{font-size:clamp(50px,15vw,78px);}}
-  </style>
-</head>
-<body>
-
-<div id="cur"></div>
-<div id="cring"></div>
-<div id="cglow"></div>
-
-<div class="gbg"></div>
-<div class="vig"></div>
-<div class="scan"></div>
-
-<div class="corner c-tl"></div>
-<div class="corner c-tr"></div>
-<div class="corner c-bl"></div>
-<div class="corner c-br"></div>
-
-<div class="side side-l">
-  <span class="side-txt">v1.0.0</span>
-  <div class="side-line"></div>
-  <span class="side-txt">2025</span>
-</div>
-<div class="side side-r">
-  <span class="side-txt">open src</span>
-  <div class="side-line"></div>
-  <span class="side-txt">dev</span>
-</div>
-
-<nav>
-  <div class="nav-left">
-    <span class="nav-logo">0x0FD</span>
-    <span class="nav-sep">/</span>
-    <span class="nav-tag">developer</span>
-  </div>
-  <ul class="nav-links">
-    <li><a href="https://0x0FD.github.io/aboutme">about me</a></li>
-    <li><a href="https://github.com/0x0FD">projects</a></li>
-    <li><a href="https://github.com/0x0FD">github ↗</a></li>
-  </ul>
-</nav>
-
-<main>
-  <p class="boot-line">[ sys.boot ] &nbsp;<span class="ok">OK</span>&nbsp; // loaded</p>
-
-  <div class="status">
-    <span class="sdot"></span>
-    online · available for collabs
-  </div>
-
-  <p class="eyebrow">// <span class="acc">developer</span> · open source</p>
-
-  <h1>
-    Hey, I'm<br />
-    <span class="glitch" data-text="0x0FD">0x0FD<span class="uline"></span></span>
-  </h1>
-
-  <p class="sub">love programming goofy things</p>
-
-  <div class="cta">
-    <a class="btn btn-p" href="https://0x0FD.github.io/photon">Photon Executor</a>
-    <a class="btn btn-g" href="https://github.com/0x0FD">Github ↗</a>
-  </div>
-</main>
-
-<div class="footer">
-  <span class="fb">0x0FD</span>
-  <span class="fsep">·</span>
-  <div class="tw">
-    <div class="ti">
-      <span>OPEN SOURCE</span><span class="d">◆</span>
-      <span>DEVELOPER</span><span class="d">◆</span>
-      <span>PHOTON EXECUTOR</span><span class="d">◆</span>
-      <span>BUILD COOL THINGS</span><span class="d">◆</span>
-      <span>OPEN SOURCE</span><span class="d">◆</span>
-      <span>DEVELOPER</span><span class="d">◆</span>
-      <span>PHOTON EXECUTOR</span><span class="d">◆</span>
-      <span>BUILD COOL THINGS</span><span class="d">◆</span>
-    </div>
-  </div>
-</div>
-
-<script>
-  const cur=document.getElementById('cur'),ring=document.getElementById('cring'),glow=document.getElementById('cglow');
-  let mx=0,my=0,rx=0,ry=0;
-
-  document.addEventListener('mousemove',e=>{
-    mx=e.clientX;my=e.clientY;
-    cur.style.left=mx+'px';cur.style.top=my+'px';
-    glow.style.left=mx+'px';glow.style.top=my+'px';
-  });
-
-  (function loop(){
-    rx+=(mx-rx)*.13;ry+=(my-ry)*.13;
-    ring.style.left=rx+'px';ring.style.top=ry+'px';
-    requestAnimationFrame(loop);
-  })();
-
-  document.querySelectorAll('a,button').forEach(el=>{
-    el.addEventListener('mouseenter',()=>{ ring.style.width='54px';ring.style.height='54px';ring.style.borderColor='rgba(255,255,141,.75)';cur.style.opacity='.3'; });
-    el.addEventListener('mouseleave',()=>{ ring.style.width='36px';ring.style.height='36px';ring.style.borderColor='rgba(255,255,141,.4)';cur.style.opacity='1'; });
-  });
-
-  // Occasional random flicker on name
-  const nm=document.querySelector('.glitch');
-  setInterval(()=>{ if(Math.random()>.9){ nm.style.filter='blur(.8px)'; setTimeout(()=>nm.style.filter='',55); } },900);
-</script>
-</body>
+        const favBtn = document.createElement("button");
+        favBtn.className = "icon-btn";
+        favBtn.innerText = isFav(url) ? "💔" : "🧡";
+        favBtn.onclick = () => {
+          if (isFav(url)) {
+            favorites = favorites.filter((c) => c !== url);
+            favBtn.innerText = "🧡";
+          } else {
+            favorites.push(url);
+            favBtn.innerText = "💔";
+          }
+          saveFavs();
+          renderFavorites();
+        };
+        const dlBtn = document.createElement("button");
+        dlBtn.className = "icon-btn";
+        dlBtn.innerText = "⬇";
+        dlBtn.onclick = async () => {
+          const res = await fetch(url);
+          const blob = await res.blob();
+          const blobUrl = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = blobUrl;
+          a.download = "cat.jpg";
+          a.click();
+          URL.revokeObjectURL(blobUrl);
+        };
+        actions.appendChild(favBtn);
+        actions.appendChild(dlBtn);
+        card.appendChild(img);
+        card.appendChild(actions);
+        return card;
+      }
+      function fillBuffer() {
+        while (buffer.length < BUFFER_SIZE) {
+          buffer.push(createCat());
+        }
+      }
+      function showCats(count = 8) {
+        for (let i = 0; i < count; i++) {
+          if (buffer.length === 0) fillBuffer();
+          grid.appendChild(buffer.shift());
+        }
+        fillBuffer();
+      }
+      function toggleFavorites() {
+        if (favPanel.style.display === "block") {
+          favPanel.style.display = "none";
+        } else {
+          renderFavorites();
+          favPanel.style.display = "block";
+        }
+      }
+      function clearFavorites() {
+        favorites = [];
+        saveFavs();
+        favPanel.innerHTML = "";
+      }
+      fillBuffer();
+      showCats(16);
+      window.addEventListener("scroll", () => {
+        if (
+          window.scrollY + window.innerHeight >
+          document.body.offsetHeight - 200
+        ) {
+          showCats(8);
+        }
+      });
+    </script>
+  </body>
 </html>
