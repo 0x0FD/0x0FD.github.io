@@ -1,14 +1,16 @@
-<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Infinite Cat Library">
-    <meta property="og:title" content="Cat Library">
-    <meta property="og:description" content="Scroll infinite silly cats">
-    <meta property="og:image" content="https://cataas.com/cat">
-    <meta property="og:type" content="website">
-    <title>Cat Library</title>
+    <meta
+      name="description"
+      content="Infinite Libraries powered by random apis"
+    />
+    <meta property="og:title" content="Random Image Libraries" />
+    <meta property="og:description" content="Scroll infinite  photos" />
+    <meta property="og:image" content="https://cataas.com/cat" />
+    <meta property="og:type" content="website" />
+    <title>Infinite Libraries</title>
     <style>
       body {
         margin: 0;
@@ -48,61 +50,25 @@
         cursor: pointer;
         transition: 0.2s;
       }
+      .divification {
+        margin-top: 20px;
+        align-items: center;
+        justify-self: center;
+        justify-items: center;
+        max-width: 600px;
+        min-width: 200px;
+
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 10px;
+        transition: 0.2s;
+      }
+
       button:hover {
         background: rgba(255, 255, 255, 0.15);
         transform: translateY(-1px);
-      }
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        gap: 14px;
-        padding: 14px;
-      }
-      .card {
-        position: relative;
-        border-radius: 16px;
-        overflow: hidden;
-        background: #151515;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-        transition:
-          transform 0.2s ease,
-          box-shadow 0.2s ease;
-      }
-      .card:hover {
-        transform: scale(1.02);
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
-      }
-      .cat {
-        width: 100%;
-        height: 220px;
-        object-fit: cover;
-        display: block;
-        transition: transform 0.3s ease;
-      }
-      .card:hover .cat {
-        transform: scale(1.05);
-      }
-      .actions {
-        position: absolute;
-        bottom: 10px;
-        right: 10px;
-        display: flex;
-        gap: 6px;
-      }
-      .icon-btn {
-        background: rgba(0, 0, 0, 0.55);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        color: white;
-        padding: 6px 8px;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 12px;
-        backdrop-filter: blur(6px);
-        transition: 0.2s;
-      }
-      .icon-btn:hover {
-        transform: scale(1.1);
-        background: rgba(0, 0, 0, 0.75);
       }
       #favoritesPanel {
         position: fixed;
@@ -127,126 +93,73 @@
         width: 100%;
         margin-bottom: 12px;
       }
+      
     </style>
   </head>
   <body>
+    <div id="favoritesPanel"></div>
     <header>
-      <h3>Cat Library <span class="smaller">by 0x0FD</span></h3>
+      <h3>Infinite Libraries <span class="smaller">by 0x0FD</span></h3>
       <div>
         <button onclick="toggleFavorites()">Favorites</button>
         <button onclick="clearFavorites()">Clear</button>
       </div>
+      
     </header>
-    <div class="grid" id="grid"></div>
-    <div id="favoritesPanel"></div>
+    <div class="divification">
+      <button onclick="open('cat')">Cat Library</button>
+      <button onclick="open('lorem')">Lorem Picsum Library</button>
+      <button onclick="open('fox')">Fox Library</button>
+      <button onclick="open('dog')">Dog Library</button>
+      <button onclick="open('frog')">Frog Library</button>
+    </div>
     <script>
-      const grid = document.getElementById("grid");
-      const favPanel = document.getElementById("favoritesPanel");
-      let buffer = [];
-      const BUFFER_SIZE = 150;
-      let favorites = JSON.parse(localStorage.getItem("cats_fav") || "[]");
-      function saveFavs() {
-        localStorage.setItem("cats_fav", JSON.stringify(favorites));
-      }
-      function isFav(url) {
-        return favorites.includes(url);
-      }
-      function renderFavorites() {
-        favPanel.innerHTML = "";
-        favorites.forEach((url) => {
-          const wrapper = document.createElement("div");
-          const img = document.createElement("img");
-          img.src = url;
-          const removeBtn = document.createElement("button");
-          removeBtn.innerText = "Remove";
-          removeBtn.onclick = () => {
-            favorites = favorites.filter((c) => c !== url);
-            saveFavs();
-            renderFavorites();
-          };
-          wrapper.appendChild(img);
-          wrapper.appendChild(removeBtn);
-          favPanel.appendChild(wrapper);
-        });
-      }
-      function createCat() {
-        const url = `https://cataas.com/cat?${Date.now()}-${Math.random()}`;
-        const card = document.createElement("div");
-        card.className = "card";
-        const img = document.createElement("img");
-        img.src = url;
-        img.className = "cat";
-        const actions = document.createElement("div");
-        actions.className = "actions";
-
-        const favBtn = document.createElement("button");
-        favBtn.className = "icon-btn";
-        favBtn.innerText = isFav(url) ? "💔" : "🧡";
-        favBtn.onclick = () => {
-          if (isFav(url)) {
-            favorites = favorites.filter((c) => c !== url);
-            favBtn.innerText = "🧡";
-          } else {
-            favorites.push(url);
-            favBtn.innerText = "💔";
-          }
-          saveFavs();
-          renderFavorites();
-        };
-        const dlBtn = document.createElement("button");
-        dlBtn.className = "icon-btn";
-        dlBtn.innerText = "⬇";
-        dlBtn.onclick = async () => {
-          const res = await fetch(url);
-          const blob = await res.blob();
-          const blobUrl = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = blobUrl;
-          a.download = "cat.jpg";
-          a.click();
-          URL.revokeObjectURL(blobUrl);
-        };
-        actions.appendChild(favBtn);
-        actions.appendChild(dlBtn);
-        card.appendChild(img);
-        card.appendChild(actions);
-        return card;
-      }
-      function fillBuffer() {
-        while (buffer.length < BUFFER_SIZE) {
-          buffer.push(createCat());
-        }
-      }
-      function showCats(count = 8) {
-        for (let i = 0; i < count; i++) {
-          if (buffer.length === 0) fillBuffer();
-          grid.appendChild(buffer.shift());
-        }
-        fillBuffer();
-      }
-      function toggleFavorites() {
-        if (favPanel.style.display === "block") {
-          favPanel.style.display = "none";
-        } else {
-          renderFavorites();
-          favPanel.style.display = "block";
-        }
-      }
-      function clearFavorites() {
-        favorites = [];
-        saveFavs();
-        favPanel.innerHTML = "";
-      }
-      fillBuffer();
-      showCats(16);
-      window.addEventListener("scroll", () => {
-        if (
-          window.scrollY + window.innerHeight >
-          document.body.offsetHeight - 200
-        ) {
-          showCats(8);
-        }
-      });
+//borign
+function open(url) {
+  window.open(`https://0x0FD.github.io/${url}`, "_blank");
+}
+const grid = document.getElementById("grid");
+const favPanel = document.getElementById("favoritesPanel");
+let buffer = [];
+const BUFFER_SIZE = 150;
+let favorites = JSON.parse(localStorage.getItem("cats_fav") || "[]");
+function saveFavs() {
+  localStorage.setItem("cats_fav", JSON.stringify(favorites));
+}
+function isFav(url) {
+  return favorites.includes(url);
+}
+function renderFavorites() {
+  favPanel.innerHTML = "";
+  favorites.forEach((url) => {
+    const wrapper = document.createElement("div");
+    const img = document.createElement("img");
+    img.src = url;
+    const removeBtn = document.createElement("button");
+    removeBtn.innerText = "Remove";
+    removeBtn.onclick = () => {
+      favorites = favorites.filter((c) => c !== url);
+      saveFavs();
+      renderFavorites();
+    };
+    wrapper.appendChild(img);
+    wrapper.appendChild(removeBtn);
+    favPanel.appendChild(wrapper);
+  });
+}
+function toggleFavorites() {
+  if (favPanel.style.display === "block") {
+    favPanel.style.display = "none";
+  } else {
+    renderFavorites();
+    favPanel.style.display = "block";
+  }
+}
+function clearFavorites() {
+  favorites = [];
+  saveFavs();
+  favPanel.innerHTML = "";
+}
     </script>
   </body>
 </html>
