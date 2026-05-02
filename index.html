@@ -107,16 +107,16 @@
       
     </header>
     <div class="divification">
-      <button onclick="open('cat')">Cat Library</button>
-      <button onclick="open('lorem')">Lorem Picsum Library</button>
-      <button onclick="open('fox')">Fox Library</button>
-      <button onclick="open('dog')">Dog Library</button>
-      <button onclick="open('frog')">Frog Library</button>
+<button onclick="openLib('cat')">Cat Library</button>
+<button onclick="openLib('lorem')">Lorem Picsum Library</button>
+<button onclick="openLib('fox')">Fox Library</button>
+<button onclick="openLib('dog')">Dog Library</button>
+<button onclick="openLib('frog')">Frog Library</button>
     </div>
     <script>
 //borign
-function open(url) {
-  window.open(`https://0x0FD.github.io/${url}`, "");
+function openLib(url) {
+  window.open(`https://0x0FD.github.io/${url}`, "_blank");
 }
 const grid = document.getElementById("grid");
 const favPanel = document.getElementById("favoritesPanel");
